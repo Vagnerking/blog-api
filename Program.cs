@@ -1,6 +1,8 @@
 using blog_api.Database;
 using blog_api.Repository;
 using blog_api.Repository.Interfaces;
+using blog_api.Services;
+using blog_api.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace blog_api
@@ -32,11 +34,13 @@ namespace blog_api
 
             builder.Services.AddScoped<ICommentRepository, CommentRepository>();
             builder.Services.AddScoped<IPostRepository, PostRepository>();
+            builder.Services.AddScoped<IPostService, PostService>();
+            builder.Services.AddScoped<ICommentService, CommentService>();
 
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment() || app.Environment.EnvironmentName.ToUpper() == "LOCAL")
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();

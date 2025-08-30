@@ -10,7 +10,7 @@ namespace blog_api.Models
         public string AuthorName { get; set; } = string.Empty;
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-        public ICollection<object> Comment { get; set; } = new List<object>();
+        public ICollection<Comment> Comment { get; set; } = new List<Comment>();
 
         public void UpdateFromDto(UpsertPostDto upsertPostDto)
         {

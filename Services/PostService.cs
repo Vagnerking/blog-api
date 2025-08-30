@@ -4,6 +4,7 @@ using blog_api.Models;
 using blog_api.Repository.Interfaces;
 using blog_api.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Data.Common;
 
 namespace blog_api.Services
 {
@@ -42,7 +43,7 @@ namespace blog_api.Services
 
                 postToUpdate.UpdateFromDto(postDto);
 
-                return await _postRepository.Create(postToUpdate);
+                return await _postRepository.Update(postToUpdate);
             }
             catch (DbUpdateException ex)
             {
@@ -71,7 +72,7 @@ namespace blog_api.Services
             {
                 return await _postRepository.GetAll();
             }
-            catch (Exception ex)
+            catch (DbException ex)
             {
                 throw new Exception("Não foi possível capturar as postagens do blog devido a um erro no banco de dados", ex);
             }
@@ -84,7 +85,7 @@ namespace blog_api.Services
                 return await _postRepository.GetById(id)
                     ?? throw new NotFoundPostException($"Nenhuma postagem encontrada para para o id {id}.");
             }
-            catch (Exception ex)
+            catch (DbException ex)
             {
                 throw new Exception("Não foi possível capturas as postagens do blog devido a um erro no banco de dados", ex);
             }

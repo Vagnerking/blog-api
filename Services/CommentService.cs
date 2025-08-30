@@ -5,6 +5,7 @@ using blog_api.Models;
 using blog_api.Repository.Interfaces;
 using blog_api.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Data.Common;
 
 namespace blog_api.Services
 {
@@ -24,7 +25,7 @@ namespace blog_api.Services
             {
                 return await _commentRepository.GetAll(postId);
             }
-            catch (Exception ex)
+            catch (DbException ex)
             {
                 throw new Exception("Não foi possível capturar os comentários da postagem devido a um erro no banco de dados", ex);
             }
@@ -36,7 +37,7 @@ namespace blog_api.Services
             {
                 return await _commentRepository.GetById(id) ?? throw new NotFoundCommentException($"Nenhum comentário encontrado com o id {id}");
             }
-            catch (Exception ex)
+            catch (DbException ex)
             {
                 throw new Exception("Não foi possível capturar o comentário devido a um erro no banco de dados", ex);
             }
