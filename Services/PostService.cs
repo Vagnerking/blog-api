@@ -37,7 +37,7 @@ namespace blog_api.Services
         {
             try
             {
-                Post? postToUpdate = await _postRepository.GetPostById(id)
+                Post? postToUpdate = await _postRepository.GetById(id)
                     ?? throw new NotFoundPostException($"Nenhuma postagem encontrada para para o id {id}, impossível atualizar.");
 
                 postToUpdate.UpdateFromDto(postDto);
@@ -81,7 +81,7 @@ namespace blog_api.Services
         {
             try
             {
-                return await _postRepository.GetPostById(id)
+                return await _postRepository.GetById(id)
                     ?? throw new NotFoundPostException($"Nenhuma postagem encontrada para para o id {id}.");
             }
             catch (Exception ex)
