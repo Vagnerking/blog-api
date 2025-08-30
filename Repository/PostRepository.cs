@@ -1,4 +1,5 @@
 ﻿using blog_api.Database;
+using blog_api.DTOs.Post;
 using blog_api.Models;
 using blog_api.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -29,14 +30,25 @@ namespace blog_api.Repository
             await _db.SaveChangesAsync();
         }
 
-        public async Task<List<Post>> GetAll()
+        public async Task<List<PostWithCommentCountDto>> GetAll()
         {
-            return await _db.Posts.ToListAsync();
+            return await _db.Posts
+            .Select(p => new PostWithCommentCountDto
+            {
+                Id = p.Id,
+                Title = p.Title,
+                Content = p.Content,
+                AuthorName = p.AuthorName,
+                CreatedAt = p.CreatedAt ?? DateTime.UtcNow,
+                UpdatedAt = p.UpdatedAt ?? DateTime.UtcNow,
+                CommentsCount = p.Comment.Count()
+            })
+            .ToListAsync();
         }
 
-        public async Task<Post?> GetPostById(int id)
+        public async Task<Post?> GetById(int id)
         {
-            return await _db.Posts.FirstOrDefaultAsync(x => x.Id == id);
+            return await _db.Posts.Include(x => x.Comment).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<Post> Update(Post post)

@@ -2,7 +2,6 @@
 using blog_api.Models;
 using blog_api.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
 
 namespace blog_api.Repository
 {
@@ -14,7 +13,7 @@ namespace blog_api.Repository
         public CommentRepository(AppDbContext db)
         {
             _db = db;
-        }
+        }}
 
         public async Task<Comment> Create(Comment comment)
         {

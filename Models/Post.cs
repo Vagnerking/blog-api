@@ -1,4 +1,6 @@
-﻿namespace blog_api.Models
+﻿using blog_api.DTOs.Post;
+
+namespace blog_api.Models
 {
     public class Post
     {
@@ -6,8 +8,17 @@
         public string Title { get; set; } = string.Empty;
         public string Content { get; set; } = string.Empty;
         public string AuthorName { get; set; } = string.Empty;
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
         public ICollection<object> Comment { get; set; } = new List<object>();
+
+        public void UpdateFromDto(UpsertPostDto upsertPostDto)
+        {
+            Title = upsertPostDto.Title;
+            Content = upsertPostDto.Content;
+            AuthorName = upsertPostDto.AuthorName;
+            UpdatedAt = DateTime.UtcNow;
+            if (CreatedAt == null) CreatedAt = DateTime.UtcNow;
+        }
     }
 }
