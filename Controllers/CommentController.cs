@@ -21,7 +21,7 @@ namespace blog_api.Controllers
             _commentService = commentService;
         }
 
-        [HttpGet("{postId}")]
+        [HttpGet("post/{postId}")]
         [SwaggerOperation(
             Summary = "Obtém todos os comentários de uma postagem",
             Description = "Obtém todos os comentários de uma postagem, sendo necessário passar apenas o id da postagem na rota."
