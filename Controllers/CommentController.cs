@@ -1,4 +1,5 @@
 ﻿using blog_api.CustomExceptions.PostExceptions;
+using blog_api.DTOs.Comment;
 using blog_api.DTOs.General;
 using blog_api.DTOs.Post;
 using blog_api.Models;
@@ -8,28 +9,28 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace blog_api.Controllers
 {
-    [Route("api/posts")]
+    [Route("api/comment")]
     [ApiController]
-    [SwaggerTag("API responsável pelo gerenciamento de postagens no Blog.")]
-    public class PostsController : ControllerBase
+    [SwaggerTag("API responsável pelo gerenciamento de comentários no Blog.")]
+    public class CommentController : ControllerBase
     {
-        private readonly IPostService _postService;
+        private readonly ICommentService _commentService;
 
-        public PostsController(IPostService postService)
+        public CommentController(ICommentService commentService)
         {
-            _postService = postService;
+            _commentService = commentService;
         }
 
-        [HttpGet]
+        [HttpGet("{postId}")]
         [SwaggerOperation(
-            Summary = "Obter todas postagens",
-            Description = "Obtem todas as postagens do blog, incluindo a sua quantidade de comentários."
+            Summary = "Obtém todos os comentários de uma postagem",
+            Description = "Obtém todos os comentários de uma postagem, sendo necessário passar apenas o id da postagem na rota."
         )]
-        public async Task<ActionResult<IEnumerable<PostWithCommentCountDto>>> GetPosts()
+        public async Task<ActionResult<IEnumerable<CommentWithoutPostDto>>> GetAll([FromRoute] int postId)
         {
             try
             {
-                return await _postService.GetAll();
+                return await _commentService.GetAll(postId);
             }
             catch (Exception ex)
             {
@@ -41,14 +42,14 @@ namespace blog_api.Controllers
 
         [HttpGet("{id}")]
         [SwaggerOperation(
-            Summary = "Obtem uma postagem específica",
-            Description = "Obtem uma postagem específica, incluindo os seus comentários."
+            Summary = "Obtém um comentário pelo id",
+            Description = "Obtém um comentário específico pelo seu id, basta apenas informar na rota."
         )]
-        public async Task<ActionResult<Post>> GetById([FromRoute] int id)
+        public async Task<ActionResult<Comment>> GetById([FromRoute] int id)
         {
             try
             {
-                return await _postService.GetById(id);
+                return await _commentService.GetById(id);
             }
             catch(NotFoundPostException notFoundEx)
             {
@@ -65,14 +66,14 @@ namespace blog_api.Controllers
 
         [HttpPost()]
         [SwaggerOperation(
-            Summary = "Criar uma postagem",
-            Description = "Cria uma postagem pro blog, bastando apenas informar título, conteúdo e autor."
+            Summary = "Cria um comentário em uma postagem",
+            Description = "Cria um comentário em uma postagem, bastando apenas informar o id da postagem, autor e conteúdo."
         )]
-        public async Task<ActionResult<Post>> Create([FromBody] UpsertPostDto upsertPostDto)
+        public async Task<ActionResult<CommentWithoutPostDto>> Create([FromBody] UpsertCommentDto upsertCommentDto)
         {
             try
             {
-                return await _postService.Create(upsertPostDto);
+                return await _commentService.Create(upsertCommentDto);
             }
             catch (Exception ex)
             {
@@ -83,14 +84,14 @@ namespace blog_api.Controllers
 
         [HttpPut("{id}")]
         [SwaggerOperation(
-            Summary = "Atualiza uma postagem do blog",
-            Description = "Atualiza uma postagem do blog. Você deve passar o id na rota e as informações de título, conteúdo e autor no body."
+            Summary = "Atualiza um comentário pelo id",
+            Description = "Atualiza um comentário pelo id, bastando apenas informar o id do comentário na rota, e o restante como id da postagem, título e autor na requisição."
         )]
-        public async Task<ActionResult<Post>> Put([FromRoute] int id, [FromBody] UpsertPostDto upsertPostDto)
+        public async Task<ActionResult<CommentWithoutPostDto>> Put([FromRoute] int id, [FromBody] UpsertCommentDto upsertPostDto)
         {
             try
             {
-                return await _postService.Update(id, upsertPostDto);
+                return await _commentService.Update(id, upsertPostDto);
             }
             catch (Exception ex)
             {
@@ -102,14 +103,14 @@ namespace blog_api.Controllers
 
         [HttpDelete("{id}")]
         [SwaggerOperation(
-            Summary = "Exclui uma postagem do blog",
-            Description = "Exclui uma postagem do blog, sendo necessário apenas passar o id na rota."
+            Summary = "Exclui um comentário pelo id",
+            Description = "Exclui um comentário pelo id, bastando apenas informar o id do comentário na rota."
         )]
         public async Task<ActionResult<Post>> Delete([FromRoute] int id)
         {
             try
             {
-                await _postService.Delete(id);
+                await _commentService.Delete(id);
                 return StatusCode(200);
             }
             catch (Exception ex)

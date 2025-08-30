@@ -1,4 +1,5 @@
 ﻿using blog_api.DTOs.Comment;
+using System.Text.Json.Serialization;
 
 namespace blog_api.Models
 {
@@ -10,6 +11,8 @@ namespace blog_api.Models
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public int PostId { get; set; }
+
+        [JsonIgnore]
         public Post Post { get; set; } = null!;
 
         public void UpdateFromDto(UpsertCommentDto upsertCommentDto)
@@ -19,6 +22,18 @@ namespace blog_api.Models
             AuthorName = upsertCommentDto.AuthorName;
             UpdatedAt = DateTime.UtcNow;
             if (CreatedAt == null) CreatedAt = DateTime.UtcNow;
+        }
+
+        public CommentWithoutPostDto ConvertToCommentWithoutPostDto()
+        {
+            return new CommentWithoutPostDto
+            {
+                Id = this.Id,
+                AuthorName = this.AuthorName,
+                Content = this.Content,
+                CreatedAt = this.CreatedAt,
+                UpdatedAt = this.UpdatedAt,
+            };
         }
     }
 }

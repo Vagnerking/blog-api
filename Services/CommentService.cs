@@ -19,11 +19,23 @@ namespace blog_api.Services
             _commentRepository = commentRepository;
         }
 
-        public async Task<List<Comment>> GetAll(int postId)
+        public async Task<List<CommentWithoutPostDto>> GetAll(int postId)
         {
             try
             {
-                return await _commentRepository.GetAll(postId);
+                List<Comment>? comments = await _commentRepository.GetAll(postId);
+
+                List<CommentWithoutPostDto> commentsWithoutPostDtos = new();
+
+                if(comments.Count > 0)
+                {
+                    foreach (Comment comment in comments)
+                    {
+                        commentsWithoutPostDtos.Add(comment.ConvertToCommentWithoutPostDto());
+                    }
+                }
+
+                return commentsWithoutPostDtos;
             }
             catch (DbException ex)
             {
@@ -43,13 +55,14 @@ namespace blog_api.Services
             }
         }
 
-        public async Task<Comment> Create(UpsertCommentDto commentDto)
+        public async Task<CommentWithoutPostDto> Create(UpsertCommentDto commentDto)
         {
             try
             {
                 Comment newComment = new();
                 newComment.UpdateFromDto(commentDto);
-                return await _commentRepository.Create(newComment);
+                Comment commentCreated = await _commentRepository.Create(newComment);
+                return commentCreated.ConvertToCommentWithoutPostDto();
             }
             catch (DbUpdateException ex)
             {
@@ -70,7 +83,7 @@ namespace blog_api.Services
             }
         }
 
-        public async Task<Comment> Update(int id, UpsertCommentDto commentDto)
+        public async Task<CommentWithoutPostDto> Update(int id, UpsertCommentDto commentDto)
         {
             try
             {
@@ -79,7 +92,8 @@ namespace blog_api.Services
 
                 commentToUpdate.UpdateFromDto(commentDto);
 
-                return await _commentRepository.Update(commentToUpdate);
+                Comment commentUpdated = await _commentRepository.Update(commentToUpdate);
+                return commentUpdated.ConvertToCommentWithoutPostDto();
             }
             catch (DbUpdateException ex)
             {

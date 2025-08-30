@@ -1,4 +1,5 @@
 ﻿using blog_api.Database;
+using blog_api.DTOs.Comment;
 using blog_api.Models;
 using blog_api.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,6 @@ namespace blog_api.Repository
         {
             await _db.Comments.AddAsync(comment);
             await _db.SaveChangesAsync();
-
             return comment;
         }
 

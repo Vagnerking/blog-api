@@ -18,7 +18,10 @@ namespace blog_api
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(x =>
+            {
+                x.EnableAnnotations();
+            });
 
             bool localRun = !builder.Environment.IsDevelopment() && !builder.Environment.IsProduction();
             builder.Services.AddDbContext<AppDbContext>(options =>
