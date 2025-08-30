@@ -1,4 +1,6 @@
 using blog_api.Database;
+using blog_api.Repository;
+using blog_api.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace blog_api
@@ -27,6 +29,9 @@ namespace blog_api
                     options.UseSqlServer(connStr);
             });
 
+
+            builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+            builder.Services.AddScoped<IPostRepository, PostRepository>();
 
             var app = builder.Build();
 
