@@ -4,6 +4,7 @@ using blog_api.DTOs.Comment;
 using blog_api.Models;
 using blog_api.Repository.Interfaces;
 using blog_api.Services.Interfaces;
+using Microsoft.CodeAnalysis.Host;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
 
@@ -12,11 +13,15 @@ namespace blog_api.Services
     public class CommentService : ICommentService
     {
         private readonly ICommentRepository _commentRepository;
+        private readonly IPostService _postService;
 
         public CommentService(
-            ICommentRepository commentRepository)
+            ICommentRepository commentRepository,
+            IPostService postService
+            )
         {
             _commentRepository = commentRepository;
+            _postService = postService;
         }
 
         public async Task<List<CommentWithoutPostDto>> GetAll(int postId)
@@ -59,6 +64,8 @@ namespace blog_api.Services
         {
             try
             {
+                Post? post = await _postService.GetById(commentDto.PostId) ?? throw new NotFoundPostException($"Nenhuma postagem encontrada para para o id {commentDto.PostId}, impossível comentar.");
+
                 Comment newComment = new();
                 newComment.UpdateFromDto(commentDto);
                 Comment commentCreated = await _commentRepository.Create(newComment);

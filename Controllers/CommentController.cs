@@ -1,4 +1,5 @@
-﻿using blog_api.CustomExceptions.PostExceptions;
+﻿using blog_api.CustomExceptions.CommentExceptions;
+using blog_api.CustomExceptions.PostExceptions;
 using blog_api.DTOs.Comment;
 using blog_api.DTOs.General;
 using blog_api.DTOs.Post;
@@ -51,7 +52,7 @@ namespace blog_api.Controllers
             {
                 return await _commentService.GetById(id);
             }
-            catch(NotFoundPostException notFoundEx)
+            catch(NotFoundCommentException notFoundEx)
             {
                 var error = new GenericExceptionDto(notFoundEx.Message, 404);
                 return StatusCode(404, error);
@@ -74,6 +75,11 @@ namespace blog_api.Controllers
             try
             {
                 return await _commentService.Create(upsertCommentDto);
+            }
+            catch (NotFoundPostException notFoundEx)
+            {
+                var error = new GenericExceptionDto(notFoundEx.Message, 404);
+                return StatusCode(404, error);
             }
             catch (Exception ex)
             {
