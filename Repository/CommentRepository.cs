@@ -13,7 +13,7 @@ namespace blog_api.Repository
         public CommentRepository(AppDbContext db)
         {
             _db = db;
-        }}
+        }
 
         public async Task<Comment> Create(Comment comment)
         {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace blog_api.DTOs
+namespace blog_api.DTOs.Comment
 {
     public class UpsertCommentDto
     {
